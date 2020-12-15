@@ -96,6 +96,17 @@ Documentation about Helm configuration can be found in the [Helm chart directory
 | `tobs metrics chunk-interval set`         | Sets the chunk interval of a specific metric to the specified duration.              | `--user`, `-U` : database user name <br> `--dbname`, `-d` : database name to connect to |
 | `tobs metrics chunk-interval reset`       | Resets chunk interval of a specific metric to the default value.                     | `--user`, `-U` : database user name <br> `--dbname`, `-d` : database name to connect to |
 
+### Volume Commands
+
+The volume operation is available for TimescaleDB & Prometheus PVC's.
+
+**Note**: To expand PVC's in Kubernetes cluster make sure you have configured `storageClass` with `allowVolumeExpansion: true` to allow PVC expansion.
+
+| Command                        | Description                                       | Flags                                |
+|--------------------------------|---------------------------------------------------|--------------------------------------|
+| `tobs volume get`     | Displays Persistent Volume Claims sizes. | `--timescaleDB-storage`, `s`, `--timescaleDB-wal`, `w`, `prometheus-storage`, `-p`  |
+| `tobs volume expand`  | Expands the Persistent Volume Claims for provided resources to specified sizes. The expansion size is allowed in `Ki`, `Mi` & `Gi` units. example: `150Gi`. | `--timescaleDB-storage`, `s`, `--timescaleDB-wal`, `w`, `prometheus-storage`, `-p` |
+
 ## Global Flags
 
 The following are global flags that can be used with any of the above commands:
@@ -119,8 +130,6 @@ Then, move the `tobs` binary from the current directory to your `/bin` folder.
 
 ## Testing
 
-WARNING: Tests start, stop, and delete the active minikube cluster. Make sure it's safe to delete your minikube cluster before starting the test.
+__Dependencies__: [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/), [kind](https://kind.sigs.k8s.io/)
 
-A testing suite is included in the `tests` folder. This testing suite has additional dependencies on [kubectl](https://kubernetes.io/docs/tasks/tools/install-kubectl/) and [minikube](https://kubernetes.io/docs/tasks/tools/install-minikube/).
-
-The testing suite can be run by calling `go test -timeout 30m` from within the `tests` folder. At least 4 cpus should be allocated for minikube with e.g. `minikube config set cpus 4`.
+A testing suite is included in the `tests` folder. The testing suite can be run by `./e2e-tests.sh` this script will create a [kind](https://kind.sigs.k8s.io) cluster, execute the test suite, and delete the kind cluster.
